@@ -1,0 +1,32 @@
+{
+	"author": "Sebastian Wiedenroth <wiedi@frubar.net>",
+	"contributors": [ 
+		{
+			"name": "Thomas Merkel",
+			"email": "tm@core.io"
+		} 
+	],
+	"bin": {
+		"zfs-snapd": "./main.js"
+	},
+	"dependencies": {
+		"express": "4.1.x",
+		"connect": "2.14.x",
+		"zfs": "1.0.x"
+	},
+	"description": "ZFS Snapshot API",
+	"keywords": [
+		"zfs",
+		"api",
+		"snapshot"
+	],
+	"licenses": [
+		{
+			"name": "BSD",
+			"url": "http://opensource.org/licenses/BSD-3-Clause"
+		}
+	],
+	"name": "zfs-snapd",
+	"version": "0.0.2"
+}
+

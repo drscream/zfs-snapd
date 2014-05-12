@@ -72,7 +72,7 @@ function validName(name) {
 app.get('/', function(req, res) {
 	listSnapshots(req.user, function(err, list) {
 		if(err) {
-			res.json(500, {'error': err})
+			res.json(500, {'status': 'error', 'error': err, 'message': err.toString('utf-8')})
 			return
 		}
 		res.json(list)
@@ -81,13 +81,13 @@ app.get('/', function(req, res) {
 
 app.post('/', function(req, res) {
 	if(!validName(req.body.name)) {
-		res.json(406, {'error': 'invalid name'})
+		res.json(406, {'status': 'error', 'error': 'invalid name'})
 		return
 	}
 
 	createSnapshot(req.user, req.body.name, function(err, list) {
 		if(err) {
-			res.json(500, {'status': 'error', 'error': err})
+			res.json(500, {'status': 'error', 'error': err, 'message': err.toString('utf-8')})
 			return
 		}
                 res.json({'status': 'success'})
@@ -96,13 +96,13 @@ app.post('/', function(req, res) {
 
 app.delete('/', function(req, res) {
 	if(!validName(req.body.name)) {
-		res.json(406, {'error': 'invalid name'})
+		res.json(406, {'status': 'error', 'error': 'invalid name'})
 		return
 	}
 
 	destroySnapshot(req.user, req.body.name, function(err, list) {
 		if(err) {
-			res.json(500, {'status': 'error', 'error': err})
+			res.json(500, {'status': 'error', 'error': err, 'message': err.toString('utf-8')})
 			return
 		}
 		res.json({'status': 'success'})

@@ -6,8 +6,11 @@ var configPath = "/etc/zfs-snapd-config.json"
 
 var repos = {}
 
-var fs = require('fs')
-var zfs = require('zfs')
+var fs   = require('fs')
+var path = require('path')
+
+var zfs     = require('zfs')
+var async   = require('async')
 var connect = require('connect')
 var express = require('express')
 
@@ -65,11 +68,49 @@ function destroySnapshot(repo, name, cb) {
 
 }
 
+function createAlias(repo, source, target, cb) {
+	var base = '/' + repos[repo].fs
+	fs.symlink(
+		base + '/.zfs/snapshot/' + source,
+		base + '/.alias/'        + target,
+		cb
+	)
+}
+
+function destroyAlias(repo, name, cb) {
+	fs.unlink('/' + repos[repo].fs + '/.alias/' + name, cb)
+}
+
+function listAlias(repo, cb) {
+	var dir = '/' + repos[repo].fs + '/.alias/'
+	fs.readdir(dir, function(err, files) {
+		if(err) {
+			cb(err)
+			return
+		}
+		var absolute_files = []
+		files.forEach(function(f) {absolute_files.push(dir + f)})
+		async.map(absolute_files, fs.readlink, function(err, results) {
+			if(err) {
+				cb(err)
+				return
+			}
+			var r = {}
+			for(var i = 0; i < results.length; i++) {
+				r[files[i]] = path.basename(results[i])
+			}
+			cb(null, r)
+		})
+
+	})
+}
+
 function validName(name) {
+	if(name === undefined) return false
 	return /^[a-zA-Z0-9_\-.]+$/.test(name)
 }
 
-app.get('/', function(req, res) {
+app.get('/snapshot', function(req, res) {
 	listSnapshots(req.user, function(err, list) {
 		if(err) {
 			res.json(500, {'status': 'error', 'error': err, 'message': err.toString('utf-8')})
@@ -79,7 +120,7 @@ app.get('/', function(req, res) {
 	})
 })
 
-app.post('/', function(req, res) {
+app.post('/snapshot', function(req, res) {
 	if(!validName(req.body.name)) {
 		res.json(406, {'status': 'error', 'error': 'invalid name'})
 		return
@@ -94,7 +135,7 @@ app.post('/', function(req, res) {
 	})
 })
 
-app.delete('/', function(req, res) {
+app.delete('/snapshot', function(req, res) {
 	if(!validName(req.body.name)) {
 		res.json(406, {'status': 'error', 'error': 'invalid name'})
 		return
@@ -108,6 +149,54 @@ app.delete('/', function(req, res) {
 		res.json({'status': 'success'})
 	})
 })
+
+
+
+app.get('/alias', function(req, res) {
+	listAlias(req.user, function(err, list) {
+		if(err) {
+			res.json(500, {'status': 'error', 'error': err, 'message': err.toString('utf-8')})
+			return
+		}
+		res.json(list)
+	})
+})
+
+app.post('/alias', function(req, res) {
+	if(!validName(req.body.source)) {
+		res.json(406, {'status': 'error', 'error': 'invalid name'})
+		return
+	}
+
+	if(!validName(req.body.target)) {
+		res.json(406, {'status': 'error', 'error': 'invalid target'})
+		return
+	}
+
+	createAlias(req.user, req.body.source, req.body.target, function(err, list) {
+		if(err) {
+			res.json(500, {'status': 'error', 'error': err, 'message': err.toString('utf-8')})
+			return
+		}
+		res.json({'status': 'success'})
+	})
+})
+
+app.delete('/alias', function(req, res) {
+	if(!validName(req.body.name)) {
+		res.json(406, {'status': 'error', 'error': 'invalid name'})
+		return
+	}
+
+	destroyAlias(req.user, req.body.name, function(err, list) {
+		if(err) {
+			res.json(500, {'status': 'error', 'error': err, 'message': err.toString('utf-8')})
+			return
+		}
+		res.json({'status': 'success'})
+	})
+})
+
 
 app.listen(process.env.PORT || 8080, process.env.HOST || '::1')
 

@@ -16,7 +16,7 @@ Example:
 
 ## API
 
-### list: GET /
+### list: GET /snapshot
 
 ##### Success Response: json string list
 	
@@ -33,7 +33,7 @@ Example:
 	curl -u test:qwe123 http://repo.example.com:8080
 	["testing-20140510"]
 
-### create: POST /
+### create: POST /snapshot
 
 ##### Data Params:
 
@@ -54,7 +54,7 @@ Example:
 	curl -u test:qwe123 -X POST -d "name=x" http://repo.example.com:8080
 	{"status":"success"}
 
-### destroy: DELETE /
+### destroy: DELETE /snapshot
 
 ##### Data Params:
 

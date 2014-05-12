@@ -16,7 +16,8 @@
 	"dependencies": {
 		"express": "4.1.x",
 		"connect": "2.14.x",
-		"zfs": "1.0.x"
+		"zfs": "1.0.x",
+		"async": "0.8.x"
 	},
 	"description": "ZFS Snapshot API",
 	"keywords": [
@@ -31,6 +32,6 @@
 		}
 	],
 	"name": "zfs-snapd",
-	"version": "0.0.4"
+	"version": "0.1.0"
 }
 

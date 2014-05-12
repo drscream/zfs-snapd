@@ -1,6 +1,10 @@
 {
 	"author": "Sebastian Wiedenroth <wiedi@frubar.net>",
-	"contributors": [ 
+	"contributors": [
+		{
+			"name": "Sebastian Wiedenroth",
+			"email": "tm@core.io"
+		},
 		{
 			"name": "Thomas Merkel",
 			"email": "tm@core.io"
@@ -27,6 +31,6 @@
 		}
 	],
 	"name": "zfs-snapd",
-	"version": "0.0.2"
+	"version": "0.0.3"
 }
 

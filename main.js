@@ -90,7 +90,7 @@ app.post('/', function(req, res) {
 			res.json(500, {'status': 'error', 'error': err, 'message': err.toString('utf-8')})
 			return
 		}
-                res.json({'status': 'success'})
+		res.json({'status': 'success'})
 	})
 })
 

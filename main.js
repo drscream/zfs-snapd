@@ -182,6 +182,28 @@ app.post('/alias', function(req, res) {
 	})
 })
 
+app.put('/alias', function(req, res) {
+	if(!validName(req.body.source)) {
+		res.json(406, {'status': 'error', 'error': 'invalid name'})
+		return
+	}
+
+	if(!validName(req.body.target)) {
+		res.json(406, {'status': 'error', 'error': 'invalid target'})
+		return
+	}
+
+	destroyAlias(req.user, req.body.target, function(err, list) {
+		createAlias(req.user, req.body.source, req.body.target, function(err, list) {
+			if(err) {
+				res.json(500, {'status': 'error', 'error': err, 'message': err.toString('utf-8')})
+				return
+			}
+			res.json({'status': 'success'})
+		})
+	})
+})
+
 app.delete('/alias', function(req, res) {
 	if(!validName(req.body.name)) {
 		res.json(406, {'status': 'error', 'error': 'invalid name'})

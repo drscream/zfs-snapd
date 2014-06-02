@@ -115,6 +115,29 @@ Example:
 	curl -u test:qwe123 -X POST -d "source=1" -d "target=testing" http://repo.example.com:8080/alias
 	{"status":"success"}
 
+### change: PUT /alias
+
+##### Data Params:
+
+- source (existing zfs snapshot)
+- target (preferred alias name)
+
+##### Success Response: json status object
+
+- Code: 200
+- Content: `{"status":"success"}`
+
+##### Error Response: json list with error details
+
+- Code: 500
+- Content: `{"status":"error","error":{"errno":47,"code":"EEXIST","path":"/pool/mirror-ubuntu/.zfs/snapshot/1"},"message":"Error: EEXIST, symlink '/pool/mirror-ubuntu/.zfs/snapshot/1'"}`
+
+##### Sample Call:
+	
+	curl -u test:qwe123 -X PUT -d "source=example" -d "target=testing" http://repo.example.com:8080/alias
+	{"status":"success"}
+
+
 ### destroy: DELETE /alias
 
 ##### Data Params:

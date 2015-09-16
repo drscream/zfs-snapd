@@ -45,7 +45,7 @@ function createSnapshot(repo, name, cb) {
 }
 
 function listSnapshots(repo, cb) {
-	zfs.list({type: 'snapshot', recursive: true, name: repos[repo].fs}, function(err, list) {
+	zfs.list({type: 'snapshot', recursive: true, name: repos[repo].fs, sort: 'creation'}, function(err, list) {
 		if(err) {
 			cb(err)
 			return
